@@ -12,7 +12,10 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
-
+.form-control::placeholder {
+  color: #ff4800;
+  font-style: italic;
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -31,6 +34,11 @@ body {
   background-color: #3c4356; /* Sabit arka plan */
   margin: 0;
   padding: 0;
+}
+.custom-dark-table td {
+  background-color: #1a1a2e !important; /* kendi koyu rengin */
+  color: #ffffff !important; /* yazılar beyaz olsun */
+  border-color: #333 !important; /* isteğe bağlı: koyu kenarlık */
 }
 @keyframes App-logo-spin {
   from {

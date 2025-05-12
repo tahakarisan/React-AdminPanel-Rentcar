@@ -26,7 +26,6 @@ const Dashboard = () => {
           <StatCard title="Kullanıcılar" value="127" icon="fa-users" />
         </div>
       </div>
-
     </div>
   );
 };

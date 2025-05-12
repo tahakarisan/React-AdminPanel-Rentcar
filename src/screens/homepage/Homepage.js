@@ -4,6 +4,7 @@ import Item from "../../components/items/Item";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import UserInfo from "../../components/userInfo/UserInfo";
 import { faCoffee } from '@fortawesome/free-solid-svg-icons';
+import EditButton from '../../components/buttons/EditButton';
 import QuitButton from "../../components/buttons/QuitButton";
 const HomePage = () => {
     return (
@@ -49,7 +50,14 @@ const HomePage = () => {
                                     role ="Admin"
                                 />
                                 <div className="container">
-                                    <QuitButton/>
+                                    <div className="row">
+                                        <div className="col-1">
+                                        <QuitButton/>
+                                        </div>
+                                        <div style={{marginLeft:"10px"}} className="col-1">
+                                            <EditButton/>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
