@@ -5,204 +5,207 @@ import { GetAllRoles, GetRoles } from "./services/RoleManagementService";
 import { DataGrid } from '@mui/x-data-grid';
 import UserRoleForm from "../../components/userRoleForm/userRoleForm";
 import axios from "axios";
+
 const RoleManagement = () => {
-    const[roles,setRoles] = useState([]);
-    const[allRoles,setAllRoles] = useState([]);
-    const[searchText,setText] = useState("");
-    const[roleName,setRoleName] = useState("");
+  const apiUrl = "https://localhost:44398/api/"
+  const [roles, setRoles] = useState([]);
+  const [allRoles, setAllRoles] = useState([]);
+  const [searchText, setSearchText] = useState("");
+  const [roleName, setRoleName] = useState("");
+  const [filteredRoles, setFilteredRoles] = useState([]);
+  const [userId,setUserId] = useState("");
+  const [userOperationClaimId,setUserOperationClaimId] = useState("");
+  const [operationClaimId,setClaim] = useState("");
+  const [selectedRoleId, setSelectedRoleId] = useState("");
 
-    const[filterRoles,setFilterRoles] = useState([]);
-    const fetchData =async ()=>{
-        const response = await GetRoles();
-        console.log(response.data.Data);
-        setRoles(response.data.Data);
-        setFilterRoles(response.data.Data);
+  const roleForm = {
+     id:userOperationClaimId,
+     userId:userId,
+     operationClaimId:selectedRoleId,
+  }
+  const updateRole = async () => {
+    try {
+      console.log(roleForm);
+      const response = await axios.put(apiUrl + "Roles/updateUserRole", roleForm);
+      console.log("Rol başarıyla eklendi:", response.data.data);
+    } catch (error) {
+      console.error("Rol eklenirken hata oluştu:", error);
     }
+  };
 
-    const getAllRoles = async()=>{
-        const response = await GetAllRoles();
-        setAllRoles(response.data.Data);
+  useEffect(() => {
+    fetchRoles();
+    fetchAllRoles();
+  }, []);
+
+  const fetchRoles = async () => {
+    try {
+      const response = await GetRoles();
+      setRoles(response.data.data);
+      console.log("Roller", response.data.data)
+      setFilteredRoles(response.data.data);
+    } catch (error) {
+      console.error("Roller alınırken hata oluştu:", error);
     }
-    
-    useEffect(()=>{
-        fetchData();
-        getAllRoles();
-    },[])
+  };
 
-    useEffect(() => {
-     console.log("All roles state değişti:", allRoles);
-    }, [allRoles]);
+  const fetchAllRoles = async () => {
+    try {
+      const response = await GetAllRoles();
+      setAllRoles(response.data.data);
+    } catch (error) {
+      console.error("Tüm roller alınırken hata oluştu:", error);
+    }
+  };
 
+  useEffect(() => {
+    const filtered = roles.filter(role =>
+      role.userName?.toLocaleLowerCase().includes(searchText.toLocaleLowerCase())
+    );
+    setFilteredRoles(filtered);
 
-    useEffect(()=>{
-        const filteredRoles = roles.filter(c =>
-              c.UserName.toLocaleLowerCase().includes(searchText.toLocaleLowerCase())
-        );
-        setFilterRoles(filteredRoles);
-    },[searchText])
-    
-    const columns = [
-        { field: 'Id', headerName: 'Id', width: 150 },
-        { field: 'RoleName', headerName: 'Rol Adı', width: 250 },
-        { field: 'Email', headerName: 'Email', width: 250 },
-        { field: 'UserName', headerName: 'Ad', width: 200 },
-        { field: 'UserLastName', headerName: 'Soyad', width: 150 },
-    ];
-    const rows = filterRoles?.map(role => ({
-        Id: role.Id,
-        UserName: role.UserName,
-        RoleName: role.RoleName, 
-        Email: role.Email,
-        UserLastName:role.UserLastName 
-    }));
+  }, [searchText, roles]);
 
-    const roleColumns = [
-        { field: 'Id', headerName: 'Id', width: 150 },
-        { field: 'Name', headerName: 'Rol Adı', width: 250 },
-    ];
-    const roleRows = allRoles?.map(role => ({
-        Id: role.Id,
-        Name: role.Name, 
-    }));
+  const handleRowClick = (params) => {
+    console.log("Kullanıcı Id",params.row.userId)
+    console.log("Operation Id",params.row.operationClaimId)
+    setUserId(params.row.userId)
+    setUserOperationClaimId(params.id)
+  };
 
-    const handleRowClick = (params) => {
-      console.log('Tıklanan ID:', params.id);
-    };
-    
-    const handleSelectionChange = (newSelection) => {
-      console.log('Seçilen IDler:', newSelection);
-  
-      const selectedId = newSelection[0]; 
-      console.log("Tek Seçilen ID:", selectedId);
-    };
-    
-    return(
-        <div style={{ backgroundColor: '#2b3044', minHeight: '100vh' }}>
-            <div className="row">
-                <div style={{ 
-                     height: '100vh',
-                     backgroundColor:"#3c4356",
-                     borderTopRightRadius:"10px",
-                     borderBottomRightRadius:"12px"
-                     }} className="col-2">
-                    <Nav/>
-                    <Item 
-                        className="fa-solid fa-tv"
-                        name="Dashboard"
-                        domain="/dashboard"
-                    />
-                    <Item 
-                        className="fa-solid fa-car"
-                        name="Araba Ekleme"
-                        domain = "/addCar"
-                    />
-                    <Item 
-                        className="fa-solid fa-copyright"
-                        name="Marka Ekleme"
-                        domain = "/addBrand"
-                    />
-                    <Item 
-                        className="fa-solid fa-hammer"
-                        name="Rol Yönetimi"
-                        domain = "/roleManagement"
-                    />
-                </div>
-                <div className="col-10">
-                    <div className="row">
-                        <div className="col-12">
-                            <div className="row">
-                                <div style={{marginTop:"20px"}} className="col-7">
-                                    <div className="input-group flex-nowrap">
-                                        <input
-                                            value={searchText}
-                                            onChange={(e) => setText(e.target.value)}
-                                            style={{ marginBottom: "20px" }}
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="İsim Giriniz"
-                                        />
-                                    </div>
-                                    <div style={{ height: 500, width: '100%', marginBottom:"80px" }}>
-                                    <DataGrid
-                                      rows={rows}
-                                      columns={columns}
-                                      getRowId={(row)=>row.Id}
-                                      pageSize={5}
-                                      rowsPerPageOptions={[5]}
-                                      checkboxSelection
-                                      disableSelectionOnClick
-                                      onRowClick={handleRowClick}
-                                      onSelectionModelChange={handleSelectionChange}                
-                                    />
-                                    </div>
-                                </div>
-                                <div className="col-5">
-                                    <UserRoleForm 
-                                        onPress={()=>{}}
-                                    />
-                                </div>
-                            </div>
+  const handleSelectionChange = (newSelection) => {
+    const selectedId = newSelection[0];
+    console.log("Seçilen ID:", selectedId);
+  };
 
-                        </div>
+  const userColumns = [
+    { field: 'id', headerName: 'Id', width: 150 },
+    { field: 'roleName', headerName: 'Rol Adı', width: 250 },
+    { field: 'email', headerName: 'Email', width: 250 },
+    { field: 'userName', headerName: 'Ad', width: 200 },
+    { field: 'userLastName', headerName: 'Soyad', width: 150 },
+  ];
 
-                        <div className="col-12">
-                            <div className="row">
-                                <div className="col-7">
-                                    <div style={{ height: 300, width: '100%', marginBottom:"80px" }}>
-                                    <DataGrid
-                                      rows={roleRows}
-                                      columns={roleColumns}
-                                      getRowId={(row)=>row.Id}
-                                      pageSize={5}
-                                      rowsPerPageOptions={[5]}
-                                      checkboxSelection
-                                      disableSelectionOnClick
-                                      onRowClick={handleRowClick}
-                                      onSelectionModelChange={handleSelectionChange}  
-                                    />
-                                    </div>
-                                </div>
-                                <div className="col-5">
-    <div  className="row">
-      <div className="col-12">
-        <div style={{margin:"15px",backgroundColor:"#3c4356"}}  className="card shadow-sm rounded p-4 text-white">
-          <h4 className="mb-4 text-center">Rol İşlemleri</h4>
-          <div className="mb-3">
-            <div className="row">
-               <div style={{marginBottom:"20px"}} className="col-12">
-                  <label htmlFor="roleSelect" className="form-label">
-                   <label htmlFor="roleSelect" className="form-label">Rol Adı</label>
-                   <input 
-                     value={roleName}
-                     onChange={(e)=>setRoleName(e.target.value)}
-                     style={styles.input} type="text" className="form-control bg-secondary" id="dailyPrice" placeholder="Örn: Yardakçı" 
-                   />
-                  </label>
-               </div>
+  const userRows = filteredRoles.map(role => ({
+    id: role.id,
+    operationClaimId: role.operationClaimId,
+    userId: role.userId,
+    userName: role.userName,
+    roleName: role.roleName,
+    email: role.email,
+    userLastName: role.userLastName,
+  }));
+
+  const roleColumns = [
+    { field: 'id', headerName: 'Id', width: 150 },
+    { field: 'name', headerName: 'Rol Adı', width: 250 },
+  ];
+
+  const roleRows = allRoles.map(role => ({
+    id: role.id,
+    name: role.name,
+  }));
+
+  return (
+    <div style={{ backgroundColor: '#2b3044', minHeight: '100vh' }}>
+      <div className="row">
+        {/* Sidebar */}
+        <div className="col-2" style={styles.sidebar}>
+          <Nav/>
+          <Item className="fa-solid fa-tv" name="Dashboard" domain="/dashboard" />
+          <Item className="fa-solid fa-car" name="Araba Ekleme" domain="/addCar" />
+          <Item className="fa-solid fa-copyright" name="Marka Ekleme" domain="/addBrand" />
+          <Item className="fa-solid fa-hammer" name="Rol Yönetimi" domain="/roleManagement" />
+        </div>
+
+        {/* Main content */}
+        <div className="col-10">
+          <div className="row">
+            {/* Kullanıcı Rolleri */}
+            <div className="col-7 mt-3">
+              <input
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                className="form-control mb-3"
+                placeholder="İsim giriniz"
+              />
+              <DataGrid
+                rows={userRows}
+                columns={userColumns}
+                getRowId={(row) => row.id}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                checkboxSelection
+                disableSelectionOnClick
+                onRowClick={handleRowClick}
+                onSelectionModelChange={handleSelectionChange}
+                style={{ height: 500 }}
+              />
             </div>
-          </div>
-          <div className="d-flex justify-content-center mt-4">
-            <button  type="submit" className="btn btn-success px-4 py-2 rounded-pill shadow">
-              Rol Ekle
-            </button>
+
+            <div className="col-5 mt-3">
+              <UserRoleForm
+                onPressAdd={updateRole}
+                onPressUpdate={updateRole}
+                setSelectedRoleId={setSelectedRoleId}
+                selectedRoleId={selectedRoleId}
+              />
+            </div>
+
+            {/* Roller */}
+            <div className="col-7 mt-4">
+              <DataGrid
+                rows={roleRows}
+                columns={roleColumns}
+                getRowId={(row) => row.id}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                checkboxSelection
+                disableSelectionOnClick
+                onRowClick={handleRowClick}
+                onSelectionModelChange={handleSelectionChange}
+                style={{ height: 300 }}
+              />
+            </div>
+
+            <div className="col-5 mt-4">
+              <div className="card shadow-sm rounded p-4 text-white" style={{ backgroundColor: "#3c4356" }}>
+                <h4 className="mb-4 text-center">Rol İşlemleri</h4>
+                <label htmlFor="roleName" className="form-label">Rol Adı</label>
+                <input
+                  value={roleName}
+                  onChange={(e) => setRoleName(e.target.value)}
+                  style={styles.input}
+                  className="form-control"
+                  id="roleName"
+                  placeholder="Örn: Yardakçı"
+                />
+                <div className="d-flex justify-content-center mt-4">
+                  <button type="submit" className="btn btn-success px-4 py-2 rounded-pill shadow">
+                    Rol Ekle
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-                                </div>
-                            </div>
-                        </div>  
-                    </div>
-                </div>
-            </div>
-        </div>
-    )
-}
+  );
+};
+
 const styles = {
-   input: {
+  sidebar: {
+    height: '100vh',
+    backgroundColor: "#3c4356",
+    borderTopRightRadius: "10px",
+    borderBottomRightRadius: "12px",
+  },
+  input: {
     backgroundColor: "#4c556e",
     borderColor: "#2b3044",
     color: "white"
   }
-}
+};
+
 export default RoleManagement;

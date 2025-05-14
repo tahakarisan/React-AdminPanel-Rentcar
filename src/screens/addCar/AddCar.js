@@ -15,9 +15,9 @@ const AddCar = () => {
 
       const getData = async ()=>{
         const response = await GetCars();
-        console.log(response.Data);
-        setCars(response.Data);
-        setFilteredCars(response.Data);
+        console.log(response.data);
+        setCars(response.data);
+        setFilteredCars(response.data);
       } 
 
       useEffect(()=>{ 
@@ -27,24 +27,24 @@ const AddCar = () => {
 
       useEffect(() => {
           const filteredBrands = cars.filter(c =>
-              c.BrandName.toLocaleLowerCase().includes(searchText.toLocaleLowerCase())
+              c.brandName.toLocaleLowerCase().includes(searchText.toLocaleLowerCase())
           );
           setFilteredCars(filteredBrands);
   
       }, [searchText]);
 
       const columns = [
-        { field: 'Id', headerName: 'Id', width: 150 },
-        { field: 'BrandName', headerName: 'Marka', width: 200 },
-        { field: 'Description', headerName: 'Açıklama', width: 250 },
-        { field: 'ColorName', headerName: 'Renk', width: 150 },
+        { field: 'id', headerName: 'Id', width: 150 },
+        { field: 'brandName', headerName: 'Marka', width: 200 },
+        { field: 'description', headerName: 'Açıklama', width: 250 },
+        { field: 'colorName', headerName: 'Renk', width: 150 },
       ];
   
   const rows = filteredCars?.map(car => ({
-    Id: car.Id,
-    BrandName: car.BrandName,
-    Description: car.Description, 
-    ColorName: car.ColorName 
+    id: car.id,
+    brandName: car.brandName,
+    description: car.description, 
+    colorName: car.colorName 
   }));
     const handleRowClick = (params) => {
       console.log('Tıklanan ID:', params.id);
@@ -106,7 +106,7 @@ const AddCar = () => {
                 <DataGrid
                   rows={rows}
                   columns={columns}
-                  getRowId={(row)=>row.Id}
+                  getRowId={(row)=>row.id}
                   pageSize={5}
                   rowsPerPageOptions={[5]}
                   checkboxSelection

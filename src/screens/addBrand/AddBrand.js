@@ -11,9 +11,9 @@ const AddBrand = () => {
 
     const getBrands = async ()=>{
         const response = await GetBrands();
-        console.log(response.Data);
-        setBrands(response.Data);
-        setFilteredBrands(response.Data);
+        console.log(response.data);
+        setBrands(response.data);
+        setFilteredBrands(response.data);
     }
 
     useEffect(()=>{
@@ -21,7 +21,7 @@ const AddBrand = () => {
     },[])
     useEffect(() => {
         const filteredBrands = brands.filter(c =>
-            c.BrandName.toLocaleLowerCase().includes(searchText.toLocaleLowerCase())
+            c.brandName.toLocaleLowerCase().includes(searchText.toLocaleLowerCase())
         );
         setFilteredBrands(filteredBrands);
 
@@ -29,15 +29,15 @@ const AddBrand = () => {
 
     //satırlarım
     const rows = filteredBrands?.map(brand => ({
-        Id: brand.Id,
-        BrandName: brand.BrandName,
-        ImagePath: brand.ImagePath
+        id: brand.id,
+        brandName: brand.brandName,
+        imagePath: brand.imagePath
     }));
     //Kolonlarım
     const columns = [
-        { field: 'Id', headerName: 'Id', width: 150 },
-        { field: 'BrandName', headerName: 'Marka', width: 200 },
-        { field: 'ImagePath', headerName: 'Url Foto', width: 250 },
+        { field: 'id', headerName: 'Id', width: 150 },
+        { field: 'brandName', headerName: 'Marka', width: 200 },
+        { field: 'imagePath', headerName: 'Url Foto', width: 250 },
     ];
     const handleRowClick = (params) => {
       console.log('Tıklanan ID:', params.id);
@@ -99,7 +99,7 @@ const AddBrand = () => {
                 <DataGrid
                   rows={rows}
                   columns={columns}
-                  getRowId={(row)=>row.Id}
+                  getRowId={(row)=>row.id}
                   pageSize={2}
                   rowsPerPageOptions={[5]}
                   checkboxSelection

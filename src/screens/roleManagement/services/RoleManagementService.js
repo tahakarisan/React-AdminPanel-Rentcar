@@ -11,3 +11,7 @@ export const GetAllRoles = ()=>{
     const response = axios.get(apiUrl+"Roles/getRoles");
     return response;
 }
+export const AddRole = (role)=>{
+    const response = axios.put(apiUrl+"Roles/UpdateUserRole",role)
+    return response;
+}

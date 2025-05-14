@@ -13,16 +13,16 @@ const CarForm = () => {
   const [selectedColorId, setSelectedColorId] = useState("");
   const [images, setImages] = useState([]);
   const carForm = {
-    BrandId:parseInt(selectedBrandId),
-    ColorId:parseInt(selectedColorId),
-    ModelYear:parseInt(modelYear),
-    DailyPrice:parseInt(dailyPrice),
-    Description:description,
+    brandId:parseInt(selectedBrandId),
+    colorId:parseInt(selectedColorId),
+    modelYear:parseInt(modelYear),
+    dailyPrice:parseInt(dailyPrice),
+    description:description,
   }
   const addCar = async (carForm) => {
   try {
     const response = await axios.post(apiUrl+"Cars/AddCar", carForm);
-    console.log(response.Message);
+    console.log(response.message);
   } catch (error) {
     console.error("Araba eklenirken hata oluştu:", error);
   }
@@ -30,7 +30,7 @@ const CarForm = () => {
   useEffect(() => {
     const fetchBrands = async () => {
       const response = await GetBrands();
-      setBrands(response.Data);
+      setBrands(response.data);
       console.log("Markalar")
       console.log(brands)
     };
@@ -40,7 +40,7 @@ const CarForm = () => {
   useEffect(()=>{
      const fetchColors = async ()=>{
         const response = await GetColors();
-        setColors(response.Data)
+        setColors(response.data)
         console.log("Renkler")
         console.log(colors)
      }
@@ -87,8 +87,8 @@ const CarForm = () => {
             >
           <option style={{backgroundColor:"#2b3044", color:"white"}}  value="">Seçiniz</option>
               {brands?.map((brand) => (
-                <option style={{backgroundColor:"#2b3044", color:"white"}} key={brand.Id} value={brand.Id}>
-                  {brand.BrandName}
+                <option style={{backgroundColor:"#2b3044", color:"white"}} key={brand.id} value={brand.id}>
+                  {brand.brandName}
                 </option>
               ))}
           </select>
@@ -117,8 +117,8 @@ const CarForm = () => {
             >
           <option style={{backgroundColor:"#2b3044", color:"white"}}  value="">Seçiniz</option>
               {colors?.map((color) => (
-                <option style={{backgroundColor:"#2b3044", color:"white"}} key={color.Id} value={color.Id}>
-                  {color.ColorName}
+                <option style={{backgroundColor:"#2b3044", color:"white"}} key={color.id} value={color.id}>
+                  {color.colorName}
                 </option>
               ))}
           </select>
