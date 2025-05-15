@@ -4,7 +4,9 @@ import Nav from "../../components/nav/Nav";
 import BrandForm from "../../components/brandForm/BrandForm";
 import { GetBrands } from "./services/BrandService";
 import { DataGrid } from "@mui/x-data-grid";
+import Loader from "../../components/loader/Loader";
 const AddBrand = () => {
+    const [dataLoaded, setDataState] = useState(false);
     const [brands,setBrands] = useState([]);
     const [filteredBrands,setFilteredBrands] = useState([]);
     const [searchText, setText] = useState("");
@@ -14,6 +16,7 @@ const AddBrand = () => {
         console.log(response.data);
         setBrands(response.data);
         setFilteredBrands(response.data);
+        setDataState(true)
     }
 
     useEffect(()=>{
@@ -81,7 +84,7 @@ const AddBrand = () => {
                         domain="/roleManagement"
                     />
         </div>
-        
+        {!dataLoaded && <Loader />}
         <div className="col-10" style={{ padding: "20px" }}>
           <div className="row">
             <div className="col-8" style={{ paddingRight: "20px" }}>

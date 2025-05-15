@@ -2,7 +2,7 @@ import React, { useState,useEffect } from "react";
 import { GetBrands } from "../../screens/addCar/services/CarService";
 import { GetColors } from "../../screens/addCar/services/CarService";
 import axios from "axios";
-const CarForm = () => {
+const CarForm = ({formData,onChange,onClick}) => {
   const apiUrl = "https://localhost:44398/api/";
   const [brands,setBrands] = useState([]);
   const [modelYear,setYear] = useState([]);
@@ -81,9 +81,10 @@ const CarForm = () => {
             <select
                 style={{backgroundColor:"#4c556e",  color:"white" , borderColor:"#2b3044"}}
                 className="form-control"
-                value={selectedBrandId}
+                value={formData.brandId}
                 id="brandId"
-                onChange={(e) => setSelectedBrandId(e.target.value)}
+                name="brandId"
+                onChange={onChange}
             >
           <option style={{backgroundColor:"#2b3044", color:"white"}}  value="">Seçiniz</option>
               {brands?.map((brand) => (
@@ -96,24 +97,29 @@ const CarForm = () => {
           <div className="col-md-6">
             <label style={styles.label} htmlFor="year" className="form-label">Model Yılı</label>
             <input 
-             value={modelYear}
-             onChange={(e)=>setYear(e.target.value)}
+            name="modelYear"
+             value={formData.modelYear}
+             onChange={onChange}
              style={styles.input} type="number" className="form-control" id="modelYear" placeholder="Örn: 2022" />
           </div>
           <div className="col-md-6">
             <label style={styles.label} htmlFor="year" className="form-label">Fiyat</label>
-            <input 
-             value={dailyPrice}
-             onChange={(e)=>setPrice(e.target.value)}
-             style={styles.input} type="number" className="form-control" id="dailyPrice" placeholder="Örn: 2022" />
+            <input
+             id="dailyPrice"
+             name="dailyPrice" 
+             value={formData.dailyPrice}
+             onChange={onChange}
+             style={styles.input} type="number" className="form-control" placeholder="Örn: 2022" />
           </div>
           <div className="col-md-6">
             <label style={styles.label} htmlFor="year" className="form-label">Renk</label>
             <select
                 style={{backgroundColor:"#4c556e",  color:"white" , borderColor:"#2b3044"}}
                 className="form-control"
-                value={selectedColorId}
-                onChange={(e) => setSelectedColorId(e.target.value)}
+                id="colorId"
+                name="colorId"
+                value={formData.colorId}
+                onChange={onChange}
             >
           <option style={{backgroundColor:"#2b3044", color:"white"}}  value="">Seçiniz</option>
               {colors?.map((color) => (
@@ -127,9 +133,10 @@ const CarForm = () => {
             <label style={styles.label} htmlFor="description" className="form-label">Açıklama</label>
             <textarea
              style={styles.input} 
-             value={description}
-             onChange={(e)=>setDescription(e.target.value)}
+             value={formData.description}
+             onChange={onChange}
              className="form-control" 
+             name="description"
              id="description" rows="3" 
              placeholder="Örn: Düşük kilometre, temiz kullanılmış..." 
              ></textarea>
@@ -161,6 +168,7 @@ const CarForm = () => {
 
         <div className="mt-4 d-flex justify-content-center">
           <button type="submit" className="btn btn-success px-5 py-2 rounded-pill">Ekle</button>
+          <button style={{marginLeft:"10px"}} onClick={onClick} disabled={!formData.id} type="submit" className="btn btn-warning px-5 py-2 rounded-pill">Güncelle</button>
         </div>
       </form>
     </div>

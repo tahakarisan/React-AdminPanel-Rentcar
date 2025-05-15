@@ -4,7 +4,9 @@ import Nav from "../../components/nav/Nav";
 import { GetAllRoles, GetRoles } from "./services/RoleManagementService";
 import { DataGrid } from '@mui/x-data-grid';
 import UserRoleForm from "../../components/userRoleForm/userRoleForm";
+import PacmanLoader from "react-spinners/PacmanLoader";
 import axios from "axios";
+import Loader from "../../components/loader/Loader";
 
 const RoleManagement = () => {
   const apiUrl = "https://localhost:44398/api/"
@@ -17,7 +19,7 @@ const RoleManagement = () => {
   const [userOperationClaimId,setUserOperationClaimId] = useState("");
   const [operationClaimId,setClaim] = useState("");
   const [selectedRoleId, setSelectedRoleId] = useState("");
-
+  const [dataLoaded,setDataState] = useState(false);
   const roleForm = {
      id:userOperationClaimId,
      userId:userId,
@@ -44,6 +46,7 @@ const RoleManagement = () => {
       setRoles(response.data.data);
       console.log("Roller", response.data.data)
       setFilteredRoles(response.data.data);
+      setDataState(true);
     } catch (error) {
       console.error("Roller alınırken hata oluştu:", error);
     }
@@ -119,6 +122,7 @@ const RoleManagement = () => {
         </div>
 
         {/* Main content */}
+        {!dataLoaded && <Loader />}
         <div className="col-10">
           <div className="row">
             {/* Kullanıcı Rolleri */}
